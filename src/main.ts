@@ -78,8 +78,44 @@ const spawnRandomCat = () => {
   const catSize = Math.max(48, Math.round(Math.min(buttonRect.width, buttonRect.height) * 0.5))
   const maxLeft = Math.max(0, window.innerWidth - catSize)
   const maxTop = Math.max(0, window.innerHeight - catSize)
-  const randomLeft = Math.random() * maxLeft
-  const randomTop = Math.random() * maxTop
+
+  const exclusionPadding = 24
+  const exclusionZone = {
+    left: buttonRect.left - exclusionPadding,
+    top: buttonRect.top - exclusionPadding,
+    right: buttonRect.right + exclusionPadding,
+    bottom: buttonRect.bottom + exclusionPadding,
+  }
+
+  const intersectsExclusionZone = (left: number, top: number) => {
+    const right = left + catSize
+    const bottom = top + catSize
+    return !(
+      right < exclusionZone.left ||
+      left > exclusionZone.right ||
+      bottom < exclusionZone.top ||
+      top > exclusionZone.bottom
+    )
+  }
+
+  let randomLeft = 0
+  let randomTop = 0
+  let foundValidSpot = false
+
+  for (let attempt = 0; attempt < 30; attempt += 1) {
+    const nextLeft = Math.random() * maxLeft
+    const nextTop = Math.random() * maxTop
+    if (!intersectsExclusionZone(nextLeft, nextTop)) {
+      randomLeft = nextLeft
+      randomTop = nextTop
+      foundValidSpot = true
+      break
+    }
+  }
+
+  if (!foundValidSpot) {
+    return
+  }
 
   const cat = document.createElement('img')
   cat.src = catImagePath
