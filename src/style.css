@@ -1,0 +1,193 @@
+:root {
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  color: #e2e8f0;
+  background: radial-gradient(circle at 20% 0%, #1e293b 0%, #0f172a 55%, #020617 100%);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+}
+
+#app {
+  position: relative;
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 1.2rem;
+}
+
+.app-shell {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  justify-items: center;
+}
+
+.cat-canvas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.cat-sprite {
+  position: absolute;
+  object-fit: contain;
+  user-select: none;
+  filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.3));
+}
+
+.snap-button {
+  --tilt-x: 0deg;
+  --tilt-y: 0deg;
+  --base-tilt-x: 14deg;
+  --base-tilt-y: -20deg;
+  --depth: 26px;
+  width: min(72vw, 320px);
+  aspect-ratio: 1.12;
+  position: relative;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  border-radius: 50% / 42%;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  transform: perspective(860px) rotateX(calc(var(--base-tilt-x) + var(--tilt-x))) rotateY(calc(var(--base-tilt-y) + var(--tilt-y))) translateZ(0);
+  transition: transform 160ms ease, filter 180ms ease;
+  filter: drop-shadow(0 20px 30px rgba(2, 6, 23, 0.45));
+}
+
+.snap-button::before {
+  content: '';
+  position: absolute;
+  inset: 10% 5% 2%;
+  border-radius: 50% / 42%;
+  background:
+    linear-gradient(180deg, rgba(22, 101, 52, 0.2) 0%, rgba(15, 23, 42, 0.56) 100%),
+    linear-gradient(90deg, rgba(187, 247, 208, 0.2) 0%, rgba(22, 163, 74, 0.4) 45%, rgba(15, 23, 42, 0.5) 100%);
+  transform: translateZ(calc(-1 * var(--depth))) translateY(calc(var(--depth) * 0.85));
+  box-shadow:
+    inset 0 2px 4px rgba(255, 255, 255, 0.2),
+    inset 0 -8px 14px rgba(2, 6, 23, 0.5);
+  pointer-events: none;
+}
+
+.snap-button:is(:hover, :focus-visible) {
+  filter: drop-shadow(0 26px 36px rgba(2, 6, 23, 0.55));
+}
+
+.snap-button:focus-visible {
+  outline: 3px solid rgba(134, 239, 172, 0.85);
+  outline-offset: 4px;
+}
+
+.snap-rim,
+.snap-core,
+.snap-gloss,
+.snap-icon,
+.snap-spark {
+  position: absolute;
+  inset: 0;
+  border-radius: 50% / 42%;
+}
+
+.snap-rim {
+  background:
+    radial-gradient(circle at 30% 25%, rgba(187, 247, 208, 0.35), transparent 42%),
+    linear-gradient(155deg, #16a34a 0%, #22c55e 35%, #15803d 70%, #14532d 100%);
+  box-shadow:
+    inset 0 8px 12px rgba(220, 252, 231, 0.32),
+    inset 0 -22px 28px rgba(20, 83, 45, 0.45),
+    0 8px 14px rgba(21, 128, 61, 0.45);
+  transform: translateZ(calc(-1 * var(--depth))) translateY(calc(var(--depth) * 0.7)) scale(1.02, 0.9);
+}
+
+.snap-core {
+  inset: 4%;
+  background:
+    radial-gradient(circle at 28% 22%, #ecfdf5 0%, #86efac 22%, rgba(34, 197, 94, 0.9) 56%, #166534 100%);
+  border: 3px solid rgba(134, 239, 172, 0.7);
+  box-shadow:
+    inset 0 10px 18px rgba(255, 255, 255, 0.46),
+    inset 0 -20px 28px rgba(22, 101, 52, 0.48),
+    inset 0 0 0 2px rgba(21, 128, 61, 0.4);
+  transform: translateZ(0) scaleY(0.97);
+}
+
+.snap-gloss {
+  inset: 7%;
+  background:
+    radial-gradient(circle at 26% 16%, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.34) 17%, transparent 42%),
+    radial-gradient(circle at 76% 74%, rgba(255, 255, 255, 0.22), transparent 30%);
+  transform: translateZ(8px) scaleY(0.95);
+  pointer-events: none;
+}
+
+.snap-icon {
+  inset: 10%;
+  width: 80%;
+  height: 80%;
+  margin: auto;
+  border-radius: 50% / 42%;
+  object-fit: contain;
+  transform: translateZ(14px) scaleY(0.95);
+  filter: drop-shadow(0 4px 10px rgba(15, 23, 42, 0.5));
+}
+
+.snap-spark {
+  width: 8%;
+  height: 8%;
+  margin: auto;
+  background: radial-gradient(circle, #ffffff 0%, #fde68a 44%, transparent 70%);
+  border-radius: 0;
+  clip-path: polygon(50% 0%, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0% 50%, 38% 38%);
+  transform: translateZ(14px);
+  opacity: 0.9;
+  animation: twinkle 2.1s ease-in-out infinite;
+}
+
+.sparkle-a {
+  inset: 22% 70% 68% 18%;
+}
+
+.sparkle-b {
+  inset: 16% 18% 74% 72%;
+  animation-delay: 0.35s;
+}
+
+.sparkle-c {
+  inset: 28% 58% 62% 30%;
+  animation-delay: 0.7s;
+}
+
+.snap-button.is-pressed {
+  transform: perspective(860px) rotateX(calc(var(--base-tilt-x) + (var(--tilt-x) * 0.65))) rotateY(calc(var(--base-tilt-y) + (var(--tilt-y) * 0.65))) translateY(7px) scale(0.985);
+}
+
+.snap-button.is-snapped .snap-core {
+  animation: pulse 280ms ease-out;
+}
+
+.snap-button.is-snapped .snap-spark {
+  animation-duration: 300ms;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.45; transform: translateZ(14px) scale(0.8); }
+  50% { opacity: 1; transform: translateZ(14px) scale(1.15); }
+}
+
+@keyframes pulse {
+  0% { filter: brightness(1); }
+  40% { filter: brightness(1.25) saturate(1.15); }
+  100% { filter: brightness(1); }
+}
